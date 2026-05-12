@@ -7,3 +7,7 @@ RUN apt update && \
 RUN mkdir -p /etc/nginx/ssl
 
 RUN apt install OpenSSL -y
+
+# for configuration files
+RUN mkdir -p /var/run/nginx
+
