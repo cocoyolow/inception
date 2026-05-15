@@ -1,7 +1,7 @@
 
 ARGS?=
 # add -it to ARGS to run interactively
-
+# --build-arg LOGIN=$$USER 
 build_nginx:
 	@docker build -t nginx srcs/requierements/nginx/
 
