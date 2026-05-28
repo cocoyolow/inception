@@ -11,7 +11,7 @@ if [ ! -f wp-config.php ]; then
     wp core download --allow-root
 
     # wait until mariadb is ready
-    while ! mysqladmin ping -h"mariadb" --silent; do
+    while ! mysqladmin ping -h "mariadb" --silent; do
         sleep 1
     done
 
@@ -43,4 +43,4 @@ else
 fi
 
 echo "Starting PHP-FPM in the foreground..."
-exec php-fpm8.2 -F
+exec php-fpm8.2 -F // -F = Foreground
