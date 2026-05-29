@@ -1,14 +1,40 @@
+NAME		= inception
+COMPOSE		= cd srcs && docker compose
+DATA_PATH	= /home/cobussie/data
 
-ARGS?=
-# add -it to ARGS to run interactively
-# --build-arg LOGIN=$$USER 
-build_nginx:
-	@docker build -t nginx srcs/requierements/nginx/
+all: $(NAME)
 
-run_nginx:
-	@docker run $(ARGS) nginx
-show_images:
-	@docker image ls
+$(NAME): setup
+	$(COMPOSE) up -d --build
 
-show_running:
-	@docker ps
+setup:
+	@mkdir -p $(DATA_PATH)/mariadb
+	@mkdir -p $(DATA_PATH)/wordpress
+	@echo "Dossiers de données créés dans $(DATA_PATH)"
+
+# Lancer les conteneurs (sans les reconstruire)
+up: setup
+	$(COMPOSE) up -d
+
+stop:
+	$(COMPOSE) stop
+
+start:
+	$(COMPOSE) start
+
+down:
+	$(COMPOSE) down
+
+# Nettoyage des conteneurs, réseaux et volumes Docker
+clean:
+	$(COMPOSE) down -v
+
+fclean: clean
+	@sudo rm -rf $(DATA_PATH)/mariadb/*
+	@sudo rm -rf $(DATA_PATH)/wordpress/*
+	@sudo rm -rf $(DATA_PATH)
+	@docker system prune -a --volumes -f
+
+re: fclean all
+
+.PHONY: all setup up stop start down clean fclean re
