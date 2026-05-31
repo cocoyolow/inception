@@ -4,17 +4,16 @@ DATA_PATH	= /home/cobussie/data
 
 all: $(NAME)
 
-$(NAME): setup
+$(NAME): up
+
+
+up: setup
 	$(COMPOSE) up -d --build
 
 setup:
+	@mkdir -p $(DATA_PATH)
 	@mkdir -p $(DATA_PATH)/mariadb
 	@mkdir -p $(DATA_PATH)/wordpress
-	@echo "Dossiers de données créés dans $(DATA_PATH)"
-
-# Lancer les conteneurs (sans les reconstruire)
-up: setup
-	$(COMPOSE) up -d
 
 stop:
 	$(COMPOSE) stop
@@ -25,16 +24,15 @@ start:
 down:
 	$(COMPOSE) down
 
-# Nettoyage des conteneurs, réseaux et volumes Docker
 clean:
 	$(COMPOSE) down -v
+	@docker system prune -a -f
+
 
 fclean: clean
-	@sudo rm -rf $(DATA_PATH)/mariadb/*
-	@sudo rm -rf $(DATA_PATH)/wordpress/*
 	@sudo rm -rf $(DATA_PATH)
-	@docker system prune -a --volumes -f
+	@docker system prune --volumes -f
 
 re: fclean all
 
-.PHONY: all setup up stop start down clean fclean re
+.PHONY: all setup up stop start down clean fclean re inception

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+mkdir -p /run/mysqld
+chown mysql:mysql /run/mysqld
+
 DB_PASSWORD=$(cat /run/secrets/db_password)
 DB_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
 USER=$(cat /run/secrets/db_user)
@@ -10,7 +13,6 @@ if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ]; then
 
     mysqld --user=mysql &
     
-    # wait until mariadb is ready
     while ! mysqladmin ping -h localhost --silent; do
         sleep 1
     done

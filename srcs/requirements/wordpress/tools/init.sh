@@ -33,7 +33,7 @@ if [ ! -f wp-config.php ]; then
         --allow-root
 
     wp core install \
-        --url=$DOMAIN_NAME \
+        --url=https://$DOMAIN_NAME \
         --title="inception" \
         --admin_user=$ADMIN_USER \
         --admin_password=$ADMIN_PASSWORD \
@@ -47,10 +47,17 @@ if [ ! -f wp-config.php ]; then
         --user_pass=$USER_PASSWORD \
         --allow-root
 
+
+    wp config set WP_REDIS_HOST redis --allow-root
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root
+    wp config set WP_CACHE true --raw --allow-root
+    wp plugin install redis-cache --activate --allow-root
+    wp redis enable --allow-root
     echo "WordPress installation completed successfully!"
 else
     echo "WordPress is already configured."
 fi
 
 echo "Starting PHP-FPM in the foreground..."
-exec php-fpm8.2 -F // -F = Foreground
+chown -R www-data:www-data /var/www/html
+exec php-fpm8.2 -F

@@ -43,6 +43,7 @@ services:
       - wp_user_email
     depends_on:
       - mariadb
+      - redis
 
   nginx:
     build:
@@ -62,7 +63,43 @@ services:
       - wordpress_data:/var/www/html
     depends_on:
       - wordpress
-
+  
+  adminer:
+    build:
+      context: requirements/bonus/adminer
+      dockerfile: Dockerfile
+    container_name: adminer
+    image: adminer
+    pull_policy: build
+    restart: always
+    networks:
+      - inception
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+  static_site:
+    build:
+      context: requirements/bonus/static_site
+      dockerfile: Dockerfile
+    container_name: static_site
+    image: static_site
+    pull_policy: build
+    restart: always
+    networks:
+      - inception
+    ports:
+      - "8081:80"
+  redis:
+    build:
+      context: requirements/bonus/redis
+      dockerfile: Dockerfile
+    container_name: redis
+    image: redis
+    pull_policy: build
+    restart: always
+    networks:
+      - inception
 networks:
   inception:
     driver: bridge

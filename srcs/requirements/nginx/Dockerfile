@@ -17,4 +17,4 @@ COPY conf/nginx.conf /etc/nginx/conf.d/inception.conf
 
 RUN chmod 755 /var/www/html
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
