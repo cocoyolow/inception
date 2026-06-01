@@ -100,6 +100,43 @@ services:
     restart: always
     networks:
       - inception
+  ftp:
+    build:
+      context: requirements/bonus/ftp
+      dockerfile: Dockerfile
+    container_name: ftp
+    image: ftp
+    pull_policy: build
+    restart: always
+    networks:
+      - inception
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    depends_on:
+      - wordpress
+    secrets:
+      - ftp_user
+      - ftp_password
+
+  portainer:
+    build:
+      context: requirements/bonus/portainer
+      dockerfile: Dockerfile
+    container_name: portainer
+    image: portainer
+    pull_policy: build
+    restart: always
+    networks:
+      - inception
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - portainer_password
 networks:
   inception:
     driver: bridge
@@ -117,6 +154,7 @@ volumes:
       type: none
       device: /home/cobussie/data/wordpress
       o: bind
+
 
 secrets:
   db_user:
@@ -137,3 +175,9 @@ secrets:
     file: ../secrets/wp_admin_email.txt
   wp_user_email:
     file: ../secrets/wp_user_email.txt
+  ftp_user:
+    file: ../secrets/ftp_user.txt
+  ftp_password:
+    file: ../secrets/ftp_password.txt
+  portainer_password:
+    file: ../secrets/portainer_password.txt
